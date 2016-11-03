@@ -4,6 +4,7 @@ var mainState = {
     game.load.image('pipe', 'assets/pipe.png');
   },
 
+
   create: function() {
     game.stage.backgroundColor = '#71c5cf';
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -12,7 +13,9 @@ var mainState = {
     this.bird = game.add.sprite(100, 245, 'bird');
     game.physics.arcade.enable(this.bird);
     this.bird.body.gravity.y = 1000;
+    this.bird.anchor.setTo(-0.2, 0.5);
 
+    // Controls
     var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
         upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     spaceKey.onDown.add(this.jump, this);
@@ -31,6 +34,7 @@ var mainState = {
     });
   },
 
+
   update: function() {
     // Restart the game if bird goes out of the screen
     if (this.bird.y < 0 || this.bird.y > 490) {
@@ -39,11 +43,20 @@ var mainState = {
 
     // Restart game if bird touches pipe
     game.physics.arcade.overlap(this.bird, this.pipes, this.restartGame, null, this);
+
+    // Rotate bird down when not flapping
+    if (this.bird.angle < 20) {
+      this.bird.angle++;
+    }
   },
 
 
   jump: function() {
     this.bird.body.velocity.y = -350;
+
+    // Rotate bird up when flapping
+    var animation = game.add.tween(this.bird);
+    animation.to({ angle: -20 }, 100).start();
   },
 
   restartGame: function() {
