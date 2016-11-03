@@ -41,17 +41,19 @@ var mainState = {
       this.restartGame();
     }
 
-    // Restart game if bird touches pipe
-    game.physics.arcade.overlap(this.bird, this.pipes, this.restartGame, null, this);
-
     // Rotate bird down when not flapping
     if (this.bird.angle < 20) {
       this.bird.angle++;
     }
+
+    // Play death animation when hit pipe
+    game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
   },
 
 
   jump: function() {
+    if (this.bird.alive == false) { return; }
+
     this.bird.body.velocity.y = -350;
 
     // Rotate bird up when flapping
@@ -87,6 +89,20 @@ var mainState = {
 
     // Increment score when new row of pipes are added
     this.labelScore.text = this.score++;
+  },
+
+  hitPipe: function() {
+    if (this.bird.alive == false) { return; }
+
+    this.bird.alive = false;
+
+    // Prevent new pipes from appearing
+    game.time.events.remove(this.timer);
+
+    // Stop pipes movement
+    this.pipes.forEach(function(pipe) {
+      pipe.body.velocity.x = 0;
+    }, this);
   }
 };
 
