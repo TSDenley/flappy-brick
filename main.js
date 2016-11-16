@@ -7,6 +7,14 @@ var mainState = {
 
 
   create: function() {
+    // Mobile display
+    if (game.device.desktop === false) {
+      game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+      game.scale.setMinMax(game.width / 2, game.height / 2, game.width, game.height);
+      game.scale.pageAlignHorizontally = true;
+      game.scale.pageAlignVertically = true;
+    }
+
     game.stage.backgroundColor = '#71c5cf';
     game.physics.startSystem(Phaser.Physics.ARCADE);
     this.jumpSound = game.add.audio('jump');
@@ -22,6 +30,9 @@ var mainState = {
         upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     spaceKey.onDown.add(this.jump, this);
     upKey.onDown.add(this.jump, this);
+
+    // Jump when clicking/tapping
+    game.input.onDown.add(this.jump, this);
 
     // Pipes
     this.pipes = game.add.group();
